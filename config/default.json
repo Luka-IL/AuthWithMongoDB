@@ -1,0 +1,5 @@
+{
+  "port": 5000,
+  "jwtSecret": "test secret jwt",
+  "mongoUri": "mongodb+srv://ilya:9iE2bs0KS7UpZTVM@cluster0.trtb8.mongodb.net/<dbname>?retryWrites=true&w=majority"
+}
