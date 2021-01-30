@@ -1,39 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { Authorization } from "../authorization/authorization";
-import { AppLoading } from "../app-loading/app-loading";
-import { Router as BrowserRouter, Switch, Route } from "react-router-dom";
 import { PasswordRecovery } from "../password-recovery/password-recovery";
-import browserHistory from "../../browser-history";
+import { OpenWindows } from "../../const";
 import "materialize-css";
 
 export function Login() {
-
+  const [openWindow, setOpenWindow] = useState(OpenWindows.AUTH)
+  const [userNameOnLoading, setUserNameOnLoading] = useState("")
   return (
     <div className="login">
-      <div className="logo">
+      <div className={"logo "  + ((openWindow === OpenWindows.LOADING) && "login--loading")}>
         <div className="logo__image"></div>
         <h2 className="logo__title">Корпоративная информационная система</h2>
+        <div className={"app-loading "   + ((openWindow === OpenWindows.LOADING) && "app-loading--loading")}>
+          <p className="app-loading__text">Добро пожаловать {userNameOnLoading}</p>
+          <div className="loader loader-4"></div>
       </div>
-      <BrowserRouter history={browserHistory}>
-        <Switch>
-          <Route exact
-            path="/"
-            render={() => (
-              <Authorization
-              />
-            )} />
-          <Route exact
-            path="/recovery"
-            render={() => (
-              <PasswordRecovery />
-            )} />
-          <Route exact
-            path="/loading"
-            render={() => (
-              <AppLoading />
-            )} />
-        </Switch>
-      </BrowserRouter>
+      </div>
+      <div className={"place-for-form " + ((openWindow === OpenWindows.LOADING) && "place-for-form--close")}>
+        <Authorization
+          openWindow={openWindow}
+          setOpenWindow={setOpenWindow}
+          setUserNameOnLoading={setUserNameOnLoading}
+        />
+
+        <PasswordRecovery
+          openWindow={openWindow}
+          setOpenWindow={setOpenWindow}
+        />
+      </div>
     </div>
   )
 }

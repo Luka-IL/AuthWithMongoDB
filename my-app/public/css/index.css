@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+button:focus {
+  outline: none;
+}
+
 input:focus {
   outline: none;
   border: none;
@@ -35,10 +39,18 @@ input:focus {
 }
 
 .logo {
-  height: 177px;
+  overflow: hidden;
+  max-height: 177px;
   padding-top: 50px;
   margin: 0px auto;
-  background-image: url('../img/background-logo.png');
+  background: url('../img/background-logo.png');
+  transition: all 0.7s
+}
+
+.login--loading {
+  height: 345px;
+  max-height: 345px;
+  background: url('../img/background-loading.png');
 }
 
 
@@ -60,8 +72,24 @@ input:focus {
   color: white;
 }
 
+.place-for-form {
+  overflow: hidden;
+  max-height: 310px;
+  transition: all 0.7s;
+}
+
+.place-for-form--close {
+  max-height: 0;
+}
+
 .login-details {
-  padding: 20px 45px 25px
+  padding: 20px 45px 25px;
+  transition-duration: 0.5s;
+  transform: translate(0, -300px);
+}
+
+.login-details--open {
+  transform: translate(0);
 }
 
 .login__form-title {
@@ -220,7 +248,12 @@ input:focus {
 }
 
 .password-recovery {
-  padding: 20px 45px 25px 
+  padding: 20px 45px 25px;
+  transition: all 0.5s;
+}
+
+.password-recovery--open {
+  transform: translate(0, -300px);
 }
 
 .input-form__recovery {
@@ -233,14 +266,13 @@ input:focus {
 }
 
 .exclamation-mark {
-  position: absolute;
-  width: 32px;
+  min-width: 32px;
   height: 32px;
   background: url("../img/carbon_warning.png");
 }
 
 .warning__text {
-  margin-left: 42px;
+  margin-left: 12px;
   font-size: 13px;
   line-height: 15px;
   color: #949494;
@@ -257,12 +289,18 @@ input:focus {
 }
 
 .app-loading {
+  opacity: 0;
   width:100%;
+  margin-top: 28px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(138.81% 16453.56% at -23.78% 12.1%, #3C8291 9.59%, #00B5AD 100%);;
+  transition-duration: 1s;
+}
+
+.app-loading--loading{
+  opacity: 1;
 }
 
 .app-loading__text {
@@ -270,11 +308,12 @@ input:focus {
   color: white;
 }
 
+
 .loader {
   padding: 0;
   position: relative;
   display: inline-block;
-  margin: 100px auto 110px;
+  margin: 20px auto;
   width: 60px;
   height: 60px;
   border: 4px solid white;

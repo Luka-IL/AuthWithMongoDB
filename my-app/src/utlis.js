@@ -12,5 +12,8 @@ export const setTypeError = (error) => {
       return {message: error, type: "email"}
     case ErrorMessage.USERFOUND:
       return {message: error, type: "email"}
+    default:
+      return {message:error, type: "other"}
   }
+
 }

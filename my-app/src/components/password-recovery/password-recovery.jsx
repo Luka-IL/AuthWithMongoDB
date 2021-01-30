@@ -1,9 +1,15 @@
 import React, {useState} from "react"
-import browserHistory from "../../browser-history";
+import { OpenWindows } from "../../const";
+import { useHttp } from "../../hooks/http.hook";
+import { setTypeError } from "../../utlis";
 
-export function PasswordRecovery() {
+
+export function PasswordRecovery(props) {
+  const {openWindow, setOpenWindow} = props
+
+  const {request } = useHttp()
   const [form, setForm] = useState({
-    email: '', password: ''
+    email: ''
   })
   const [validEmail, setValidEmail] = useState(true)
   const [focusStyleEmail, setFocusStyleEmail] = useState(false)
@@ -14,7 +20,17 @@ export function PasswordRecovery() {
   }
 
   const clickBackHandler = () =>{
-    browserHistory.push("/")
+    setOpenWindow(OpenWindows.AUTH)
+  }
+
+  const recoveryClickHandler = async (evt) => {
+    evt.preventDefault()
+    try {
+      const data = await request('/api/auth/recovery', 'POST', { ...form })
+      console.log(`"Новый пароль отправлен на почту " ${data}`)
+    } catch (e) {
+      setError(setTypeError(e.message))
+    }
   }
 
   const onBlurEmailHandler = (evt) => {
@@ -30,7 +46,7 @@ export function PasswordRecovery() {
   }
 
   return (
-    <div className="password-recovery">
+    <div className={"password-recovery " + ((openWindow==="Recovery") && "password-recovery--open")}>
       <h3 className="password-recovery__title login__form-title">Восстановление пароля</h3>
       <div className="login__input-form input-form__recovery">
       <input className={((!validEmail || (error.type === "email")) ? "error-validation__input " : "") + "login__input " + (focusStyleEmail && "login__input--focus")}
@@ -55,7 +71,10 @@ export function PasswordRecovery() {
         <button className="choice__back choice__btn choice__btn-first"
           onClick={clickBackHandler}
         >Назад</button>
-        <button className="choice__recovery choice__btn choice__btn-second" type="submit">Восстановить</button>
+        <button className="choice__recovery choice__btn choice__btn-second"
+        type="submit"
+        onClick={recoveryClickHandler}
+        >Восстановить</button>
       </div>
     </div>
   )

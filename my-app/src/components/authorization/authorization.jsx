@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
-import browserHistory from "../../browser-history";
-import {setTypeError} from "../../utlis"
+import { OpenWindows } from "../../const"
+import { setTypeError } from "../../utlis"
 
 
-const Authorization = () => {
+const Authorization = (props) => {
+  const { openWindow, setOpenWindow, setUserNameOnLoading } = props;
   const { loading, request } = useHttp()
   const [form, setForm] = useState({
     email: '', password: ''
@@ -19,7 +20,7 @@ const Authorization = () => {
     setForm({ ...form, [evt.target.name]: evt.target.value })
   }
 
-  const registerHandler = async () => {
+  /*const registerHandler = async () => {
 
     try {
       const data = await request('/api/auth/register', 'POST', { ...form })
@@ -27,23 +28,37 @@ const Authorization = () => {
     } catch (e) {
       setError(setTypeError(e.message))
     }
-  }
+  }*/
 
-  const recoveryHandler = () => {
-    browserHistory.push(`/recovery`)
+  const recoveryHandler = (evt) => {
+    evt.preventDefault()
+    setOpenWindow(OpenWindows.RECOVERY)
   }
 
   const loginHandler = async (evt) => {
     evt.preventDefault()
-    if (!error.message && validEmail && validPassword) {
-    try {
-      const data = await request('/api/auth/login', 'POST', { ...form })
-      console.log('Data', data)
-      browserHistory.push("/loading")
-    } catch (e) {
-      setError(setTypeError(e.message))
+
+    if (!form.email) {
+      setError({ message: "Введите email", type: "email" })
+      return
     }
-  }
+    if (!form.password) {
+      setError({ message: "Введите пароль", type: "password" })
+      return
+    }
+
+    if (!error.message && validEmail && validPassword) {
+      try {
+        const data = await request('/api/auth/login', 'POST', { ...form })
+        console.log('Data', data)
+
+        setUserNameOnLoading(form.email)
+        setOpenWindow(OpenWindows.LOADING)
+
+      } catch (e) {
+        setError(setTypeError(e.message))
+      }
+    }
   }
 
   const onBlurEmailHandler = (evt) => {
@@ -56,7 +71,7 @@ const Authorization = () => {
     let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     const emailValid = reg.test(evt.target.value)
     setValidEmail(emailValid)
-    emailValid ? setError({}) : setError({type:"email", message:"Введите корректный Email"})
+    emailValid ? setError({}) : setError({ type: "email", message: "Введите корректный Email" })
   }
 
   const onBlurPasswordHandler = (evt) => {
@@ -67,11 +82,11 @@ const Authorization = () => {
       return
     }
     if (evt.target.value.length < 6) {
-    setValidPassword(false) 
-    setError({type:"password", message:"Минимальная длина пароля 6 символов"}) 
-  } else {
-    setValidPassword(true)
-    setError({})
+      setValidPassword(false)
+      setError({ type: "password", message: "Минимальная длина пароля 6 символов" })
+    } else {
+      setValidPassword(true)
+      setError({})
     }
   }
 
@@ -80,11 +95,11 @@ const Authorization = () => {
   }
 
   const changeStyleOnFocusPassword = () => {
-      setFocusStylePassword(true)
+    setFocusStylePassword(true)
   }
 
   return (
-    <div className="login-details">
+    <div className={"login-details " + ((openWindow === "Auth") && "login-details--open")}>
       <h3 className="login-details__title login__form-title">Данные для входа</h3>
       <form action="#">
         <div className="login__input-form input-form__login">
@@ -102,7 +117,7 @@ const Authorization = () => {
           {error.type === "email" && <span className="error-validation__message">{error.message}</span>}
         </div>
         <div className="login__input-form input-form__password">
-          <input className={((!validPassword || (error.type === "password")) ? "error-validation__input " : "") + "login__input input-password "  + (focusStylePassword && "login__input--focus")}
+          <input className={((!validPassword || (error.type === "password")) ? "error-validation__input " : "") + "login__input input-password " + (focusStylePassword && "login__input--focus")}
             id="input-password"
             placeholder="Введите пароль"
             type="password"
@@ -111,7 +126,7 @@ const Authorization = () => {
             onFocus={changeStyleOnFocusPassword}
             onBlur={onBlurPasswordHandler}
 
-            
+
           />
           <label className="login__label" htmlFor="input-password">Пароль*</label>
           {error.type === "password" && <span className="error-validation__message">{error.message}</span>}
