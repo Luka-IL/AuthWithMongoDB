@@ -13,6 +13,10 @@ button:focus {
   outline: none;
 }
 
+input {
+  border:none;
+}
+
 input:focus {
   outline: none;
   border: none;
@@ -31,6 +35,7 @@ input:focus {
 }
 
 .login {
+  overflow: hidden;
   width: 437px; 
   max-height: 485px;
   margin: auto;
@@ -45,7 +50,7 @@ input:focus {
   padding-top: 50px;
   margin: 0px auto;
   background: url('../img/background-logo.png');
-  transition: all 0.7s
+  transition: all 0.7s;
 }
 
 .login--loading .logo {
@@ -116,18 +121,19 @@ input:focus {
   padding-top: 28px;
   padding-bottom:10px;
   background: #F2F2F2;
-  border: none;
+  border: 1px solid #F2F2F2;
   border-radius: 6px;
   transition: all 0.3s;
 }
 
 .login__input:focus {
   background-color: #FFFFFF;
+  border: 1px solid #F2F2F2;
+
 }
 
 .login__input--focus {
   outline: none;
-  border: 1px solid #F2F2F2;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -181,9 +187,16 @@ input:focus {
 }
 
 .error-validation__message {
+  position: absolute;
+  left: 0;
+  bottom: -16px;
   font-size: 12px;
   line-height: 14px;
   color: #EB5757
+}
+
+.recovery-message {
+  position: static;
 }
 
 .line {
@@ -224,17 +237,27 @@ input:focus {
   align-items: center;
   height: 100%;
   padding: 0 15px;
-  background: #EBEBEB;
+  background: radial-gradient(5422.06% 1119.76% at 0% 288.54%, #3C8291 0%, #00B5AD 100%);
   border: none;
   border-radius: 6px;
-  transition-duration: 0.3s;
+  color: #FFFFFF;
+  transition: all 0.3s;
   cursor: pointer;
 
 }
 
 .choice__btn-second:hover {
-  color: #FFFFFF;
-  background: radial-gradient(5422.06% 1119.76% at 0% 288.54%, #3C8291 0%, #00B5AD 100%);
+  background: linear-gradient(90.26deg, #00B5AD -75.74%, #5F3264 87.41%);
+  transition: all 0.3s;
+
+}
+
+.choice__btn-second:disabled {
+  color: #949494;
+  background: #EBEBEB;
+  cursor: default;
+  transition: all 0.3s;
+
 }
 
 .arrow {

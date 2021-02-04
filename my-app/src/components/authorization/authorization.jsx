@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { OpenWindows } from "../../const"
-import { setTypeError } from "../../utlis"
+import { setTypeError, checkForValidationEmail } from "../../utlis"
+
 
 
 const Authorization = (props) => {
@@ -40,15 +41,6 @@ const Authorization = (props) => {
   const loginHandler = async (evt) => {
     evt.preventDefault()
 
-    if (!form.email) {
-      setError({ message: "Введите email", type: "email" })
-      return
-    }
-    if (!form.password) {
-      setError({ message: "Введите пароль", type: "password" })
-      return
-    }
-
     if (!error.message && validEmail && validPassword) {
       try {
         const data = await request('/api/auth/login', 'POST', { ...form })
@@ -71,9 +63,10 @@ const Authorization = (props) => {
       setError({})
       return
     }
-    let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    const emailValid = reg.test(evt.target.value)
+
+    const emailValid = checkForValidationEmail(evt.target.value)
     setValidEmail(emailValid)
+    
     if (emailValid) {
       setError({}) 
       setCheckMarkEmail(true)
@@ -110,12 +103,18 @@ const Authorization = (props) => {
     setFocusStylePassword(true)
   }
 
+  const keyDownHandler = (evt) => {
+    if (evt.keyCode === 13) {
+      evt.target.blur(); 
+    }
+  }
+
   return (
     <div className={"login-details " + ((openWindow === "Auth") && "login-details--open")}>
       <h3 className="login-details__title login__form-title">Данные для входа</h3>
       <form action="#">
         <div className="login__input-form input-form__login">
-          <input className={((!validEmail || (error.type === "email")) ? "error-validation__input " : "") + "login__input " + (focusStyleEmail && "login__input--focus")}
+          <input className={((!validEmail || (error.type === "email")) && "error-validation__input") + " login__input " + (focusStyleEmail && "login__input--focus")}
             id="input-login"
             placeholder="e-mail@mail.ru"
             type="text"
@@ -123,10 +122,11 @@ const Authorization = (props) => {
             onChange={changeHandler}
             onFocus={changeStyleOnFocusEmail}
             onBlur={onBlurEmailHandler}
+            onKeyDown={keyDownHandler}
 
           />
           <label className="login__label" htmlFor="input-login">Логин*</label>
-          <div className={checkMarkEmail ? "check-mark" : ""}></div>
+          <div className={checkMarkEmail && "check-mark"}></div>
           {error.type === "email" && <span className="error-validation__message">{error.message}</span>}
         </div>
         <div className="login__input-form input-form__password">
@@ -138,6 +138,7 @@ const Authorization = (props) => {
             onChange={changeHandler}
             onFocus={changeStyleOnFocusPassword}
             onBlur={onBlurPasswordHandler}
+            onKeyDown={keyDownHandler}
 
 
           />
@@ -153,12 +154,13 @@ const Authorization = (props) => {
           <button className="choice__entry choice__btn choice__btn-second"
             type="submit"
             onClick={loginHandler}
-            disabled={loading}
+            disabled={!checkMarkEmail || !checkMarkPassword || loading}
           >
             <div>
               Войти в систему
             </div>
-            <div className="arrow"></div></button>
+            <div className="arrow"></div>
+          </button>
           {/*<button className="choice__recovery choice__btn choice__btn-second"
             type="submit"
             onClick={registerHandler}

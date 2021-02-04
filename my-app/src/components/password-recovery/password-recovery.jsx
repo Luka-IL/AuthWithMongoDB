@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import { OpenWindows } from "../../const";
 import { useHttp } from "../../hooks/http.hook";
-import { setTypeError } from "../../utlis";
+import { setTypeError, checkForValidationEmail } from "../../utlis";
 
 
 export function PasswordRecovery(props) {
@@ -34,15 +34,26 @@ export function PasswordRecovery(props) {
   }
 
   const onBlurEmailHandler = (evt) => {
-    !evt.target.value && setFocusStyleEmail(false)
-    let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    const emailValid = reg.test(evt.target.value)
+    if(!evt.target.value) {
+      setFocusStyleEmail(false)
+      setValidEmail(true)
+      setError({})
+      return
+    }
+    const emailValid = checkForValidationEmail(evt.target.value)
     setValidEmail(emailValid)
+    
     emailValid ? setError({}) : setError({type:"email", message:"Введите корректный Email"})
   }
 
   const changeStyleOnFocusEmail = () => {
     setFocusStyleEmail(true)
+  }
+
+  const keyDownHandler = (evt) => {
+    if (evt.keyCode === 13) {
+      evt.target.blur(); 
+    }
   }
 
   return (
@@ -57,9 +68,11 @@ export function PasswordRecovery(props) {
             onChange={changeHandler}
             onFocus={changeStyleOnFocusEmail}
             onBlur={onBlurEmailHandler}
+            onKeyDown={keyDownHandler}
+
           />
         <label className="login__label" htmlFor="input-login">E-mail*</label>
-        {error.type === "email" && <span className="error-validation__message">{error.message}</span>}
+        {error.type === "email" && <span className="error-validation__message recovery-message">{error.message}</span>}
 
       </div>
       <div className="warning">
@@ -74,6 +87,7 @@ export function PasswordRecovery(props) {
         <button className="choice__recovery choice__btn choice__btn-second"
         type="submit"
         onClick={recoveryClickHandler}
+        disabled={!validEmail || !form.email}
         >Восстановить</button>
       </div>
     </div>
