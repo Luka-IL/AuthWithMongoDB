@@ -1,3 +1,5 @@
+import {OpenWindows} from "./const"
+
 const ErrorMessage = {
   INCORRECTPASSWORD: `Неверный пароль, попробуйте снова`,
   USERNOTFOUND: `Пользователь не найден`,
@@ -8,12 +10,22 @@ export const setTypeError = (error) => {
   switch (error) {
     case ErrorMessage.INCORRECTPASSWORD:
       return {message: error, type: "password"}
-    case ErrorMessage.USERNOTFOUND:
-      return {message: error, type: "email"}
-    case ErrorMessage.USERFOUND:
+    case (ErrorMessage.USERNOTFOUND || ErrorMessage.USERFOUND):
       return {message: error, type: "email"}
     default:
       return {message:error, type: "other"}
   }
+}
 
+export const setClassNameOnLogin = (openWindow) => {
+  switch(openWindow) {
+    case OpenWindows.AUTH: 
+      return "login--auth"
+    case OpenWindows.RECOVERY: 
+      return "login--recovery"
+    case OpenWindows.LOADING: 
+      return "login--loading"
+    default:
+      return "";
+  }
 }

@@ -15,6 +15,8 @@ const Authorization = (props) => {
   const [validPassword, setValidPassword] = useState(true)
   const [focusStyleEmail, setFocusStyleEmail] = useState(false)
   const [focusStylePassword, setFocusStylePassword] = useState(false)
+  const [checkMarkEmail, setCheckMarkEmail] = useState(false)
+  const [checkMarkPassword, setCheckMarkPassword] = useState(false)
 
   const changeHandler = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value })
@@ -65,27 +67,37 @@ const Authorization = (props) => {
     if (!evt.target.value) {
       setFocusStyleEmail(false)
       setValidEmail(true)
+      setCheckMarkEmail(false)
       setError({})
       return
     }
     let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     const emailValid = reg.test(evt.target.value)
     setValidEmail(emailValid)
-    emailValid ? setError({}) : setError({ type: "email", message: "Введите корректный Email" })
+    if (emailValid) {
+      setError({}) 
+      setCheckMarkEmail(true)
+    } else {
+      setError({ type: "email", message: "Введите корректный Email" })
+      setCheckMarkEmail(false)
+    }
   }
 
   const onBlurPasswordHandler = (evt) => {
     if (!evt.target.value) {
       setFocusStylePassword(false)
       setValidPassword(true)
+      setCheckMarkPassword(false)
       setError({})
       return
     }
     if (evt.target.value.length < 6) {
       setValidPassword(false)
+      setCheckMarkPassword(false)
       setError({ type: "password", message: "Минимальная длина пароля 6 символов" })
     } else {
       setValidPassword(true)
+      setCheckMarkPassword(true)
       setError({})
     }
   }
@@ -114,6 +126,7 @@ const Authorization = (props) => {
 
           />
           <label className="login__label" htmlFor="input-login">Логин*</label>
+          <div className={checkMarkEmail ? "check-mark" : ""}></div>
           {error.type === "email" && <span className="error-validation__message">{error.message}</span>}
         </div>
         <div className="login__input-form input-form__password">
@@ -129,6 +142,7 @@ const Authorization = (props) => {
 
           />
           <label className="login__label" htmlFor="input-password">Пароль*</label>
+          <div className={checkMarkPassword ? "check-mark" : ""}></div>
           {error.type === "password" && <span className="error-validation__message">{error.message}</span>}
         </div>
         <div className="line"></div>
