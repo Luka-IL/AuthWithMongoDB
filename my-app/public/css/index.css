@@ -119,8 +119,12 @@ input:focus {
   border: none;
   border-radius: 6px;
   transition: all 0.3s;
-
 }
+
+.login__input:focus {
+  background-color: #FFFFFF;
+}
+
 .login__input--focus {
   outline: none;
   border: 1px solid #F2F2F2;
@@ -128,7 +132,6 @@ input:focus {
   font-weight: normal;
   font-size: 14px;
   line-height: 16px;
-  background: #FFFFFF;
 }
 
 .login__input::placeholder {
